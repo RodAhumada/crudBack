@@ -10,6 +10,9 @@ class User(BaseModel):
     mail:str
     password:str
 
+class UserId(BaseModel):
+	id:int
+
 class ListUser(BaseModel):
     id:int
     rut:str
@@ -20,3 +23,12 @@ class ListUser(BaseModel):
     mail:str
     class Config():
         from_attributes = True
+
+class DelUser(BaseModel):
+    rut:str
+    nombre:str
+    apPaterno:str
+    apMaterno:str
+    class Config():
+        from_attributes = True
+

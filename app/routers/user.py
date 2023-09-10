@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 from typing import List
 
-from app.schemas import User, ListUser
+from app.schemas import User, ListUser, DelUser, UserId
 
 from app.db.database import get_db
 
@@ -42,3 +42,21 @@ def crear_usuario(user:User, db:Session = Depends(get_db)):
         return {"mensaje":"Usuario creado con éxito"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al crear el usuario: {str(e)}")
+    
+# *obtener usurio
+@router.post('/get_user', response_model=DelUser)
+def get_usurio(user_id:UserId, db:Session = Depends(get_db)):
+    usuario = db.query(models.User).filter(models.User.id == user_id.id).first()
+    if usuario is None:
+        raise HTTPException(status_code=404, detail="No se encontró el usuario")
+    return usuario
+
+# *eliminar usuario
+@router.delete('/')
+def del_usuario(user_id:UserId, db:Session = Depends(get_db)):
+    usuario = db.query(models.User).filter(models.User.id == user_id.id).first()
+    if usuario is None:
+        raise HTTPException(status_code=404, detail="No se encontró el usuario")
+    db.delete(usuario)
+    db.commit()
+    return{"mensaje":"Usuario eliminado con éxito"}
